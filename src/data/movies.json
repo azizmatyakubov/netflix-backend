@@ -4,13 +4,23 @@
     "Year": "2011",
     "Type": "movie",
     "Poster": "https://m.media-amazon.com/images/M/MV5BMTM5MzcwOTg4MF5BMl5BanBnXkFtZTgwOTQwMzQxMDE@._V1_SX300.jpg",
-    "_id": "etxcy59pol1ysvh06"
+    "_id": "etxcy59pol1ysvh06",
+    "reviews": []
   },
   {
     "Title": "new movie",
     "Year": "2012",
     "Type": "movie",
     "Poster": "https://m.media-amazon.com/images/M/MV5BMTM5MzcwOTg4MF5BMl5BanBnXkFtZTgwOTQwMzQxMDE@._V1_SX300.jpg",
-    "_id": "etxcy59pol1ysvmek"
+    "_id": "etxcy59pol1ysvmek",
+    "reviews": [
+      {
+        "name": "Jeff11111",
+        "comment": "I like it",
+        "rate": "1",
+        "_id": "etxcy5afkl1yv8b5s",
+        "createdAt": "2022-04-14T10:35:34.144Z"
+      }
+    ]
   }
 ]
