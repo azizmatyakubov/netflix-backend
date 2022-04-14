@@ -1,8 +1,8 @@
 import express from "express";
-import { getMovies, writeMovies } from "../../lib/fs-tools.js";
+import { getMovies, saveCoverMovie, writeMovies } from "../../lib/fs-tools.js";
 import uniqid from 'uniqid'
 import createError from "http-errors";
-
+import multer from "multer";
 
 const mediaRouter = express.Router()
 
@@ -134,6 +134,26 @@ mediaRouter.delete('/:mediaID/reviews/:reviewID', async(req, res, next) => {
             }
         } else {
             next(createError(404, `movie with id ${req.params.reviewID} not found` ))
+        }
+    } catch (error) {
+        next(error)
+    }
+})
+
+// 9. POST POSTER 
+mediaRouter.post('/:movieID/poster', multer().single('coverMovie'), async(req, res, next) => {
+    try {
+        const movieID = req.params.movieID
+        const url = `http://localhost:${process.env.PORT}/image/${movieID}.jpg`
+        await saveCoverMovie(`${movieID}.jpg`, req.file.buffer)
+        const movies = await getMovies()
+        const foundMovie = movies.find(movie => movie._id === movieID)
+        if(foundMovie) {
+            foundMovie.Poster = url
+            writeMovies(movies)
+            res.status(201).send('cover added')
+        } else {
+            next(createError(404, `Movie with id ${movieID} not found`))
         }
     } catch (error) {
         next(error)

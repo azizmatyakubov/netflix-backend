@@ -4,16 +4,17 @@ import cors from 'cors'
 import { moviesJsonPath, getMovies } from './lib/fs-tools.js'
 import mediaRouter from './services/media/index.js'
 import { badRequestErrorHandler, genericErrorHandler, notFoundErrorHandler, unauthorizedErrorHandler } from './errorHandlers.js'
+import {join} from 'path'
 
 const app = express()
 
 const PORT = process.env.PORT || 4001
 
+const publicFolderPath = join(process.cwd(), './public') 
 
+app.use(express.static(publicFolderPath))
 app.use(cors())
 app.use(express.json())
-
-
 
 app.use('/media/', mediaRouter)
 
