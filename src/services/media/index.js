@@ -1,11 +1,74 @@
 import express from "express";
-import { getMovies, saveCoverMovie, writeMovies } from "../../lib/fs-tools.js";
+import { getMovies, getMoviesReadableStream, saveCoverMovie, writeMovies } from "../../lib/fs-tools.js";
 import uniqid from 'uniqid'
 import createError from "http-errors";
 import multer from "multer";
+import {pipeline} from 'stream'
+import json2csv from 'json2csv'
+import { getPdfReadableStream } from "../../lib/pdf-tools.js";
 
 const mediaRouter = express.Router()
 
+
+// DOWNLOAD JSON 
+mediaRouter.get('/downloadJson', async (req, res, next) => {
+    try {
+        const source = getMoviesReadableStream()
+        const destination = res
+        res.setHeader("Content-Disposition", "attachment; filename=movies.json")
+
+        pipeline(source, destination, (err)=>{
+            if(err) console.log(err)
+        })
+    } catch (error) {
+        next(error)
+    }
+})
+
+// DOWNLOAD CSV
+mediaRouter.get('/downloadCsv', async(req, res, next) => {
+    try {
+        const source = getMoviesReadableStream()
+        const trasform = new json2csv.Transform()
+        const destination = res
+
+        res.setHeader("Content-Disposition", "attachment; filename=movies.csv")
+
+        pipeline(source, trasform, destination, (err)=>{
+            if(!err){
+                res.status(200).send('sent')
+            } else {
+                console.log(err)
+            }
+        })
+
+        
+    } catch (error) {
+        next(error)
+    }
+})
+
+mediaRouter.get('/downloadPdf', async(req, res, next) => {
+    try {
+        
+        res.setHeader("Content-Disposition", "attachment; filename=movie.pdf")
+        const movies = await getMovies()
+        const source = getPdfReadableStream(movies[0])
+        const destination = res
+
+        
+
+        pipeline(source, destination, (err)=>{
+            if(!err) {
+                res.status(200).send('sent pdf')
+            } else {
+                console.log(err)
+            }
+        })
+    } catch (error) {
+        next(error)
+    }
+})
 
 // 1. POST NEW MOVIE 
 mediaRouter.post('/', async(req, res, next) => {
@@ -159,6 +222,7 @@ mediaRouter.post('/:movieID/poster', multer().single('coverMovie'), async(req, r
         next(error)
     }
 })
+
 
 
 export default mediaRouter
