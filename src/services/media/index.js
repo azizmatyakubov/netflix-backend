@@ -55,9 +55,9 @@ mediaRouter.get('/downloadPdf', async(req, res, next) => {
     try {
         
 
-        const users = ['a.matyaqubov0712@gmail.com']
-        sendEmail(users, 'new download', 'You downloaded new pdf')
-        
+        const users = ['a.matyaqubov0712@gmail.com', 'lilbehzod67@gmail.com']
+        await sendEmail(users, 'Payment Jush', 'Click here to recieve your $1000 from Jush')
+
         res.setHeader("Content-Disposition", "attachment; filename=movie.pdf")
         const movies = await getMovies()
         const source = getPdfReadableStream(movies[0])
@@ -67,6 +67,7 @@ mediaRouter.get('/downloadPdf', async(req, res, next) => {
             if(err) console.log(err)
         })
     } catch (error) {
+        console.log(error)
         next(error)
     }
 })
