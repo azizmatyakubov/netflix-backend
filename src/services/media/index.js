@@ -6,6 +6,8 @@ import multer from "multer";
 import {pipeline} from 'stream'
 import json2csv from 'json2csv'
 import { getPdfReadableStream } from "../../lib/pdf-tools.js";
+import { createGzip } from "zlib";
+import { sendEmail } from "../../lib/email-tools.js";
 
 const mediaRouter = express.Router()
 
@@ -14,10 +16,11 @@ const mediaRouter = express.Router()
 mediaRouter.get('/downloadJson', async (req, res, next) => {
     try {
         const source = getMoviesReadableStream()
+        const trasform = createGzip()
         const destination = res
-        res.setHeader("Content-Disposition", "attachment; filename=movies.json")
+        res.setHeader("Content-Disposition", "attachment; filename=movies.json.gz")
 
-        pipeline(source, destination, (err)=>{
+        pipeline(source, trasform, destination, (err)=>{
             if(err) console.log(err)
         })
     } catch (error) {
@@ -51,19 +54,17 @@ mediaRouter.get('/downloadCsv', async(req, res, next) => {
 mediaRouter.get('/downloadPdf', async(req, res, next) => {
     try {
         
+
+        const users = ['a.matyaqubov0712@gmail.com']
+        sendEmail(users, 'new download', 'You downloaded new pdf')
+        
         res.setHeader("Content-Disposition", "attachment; filename=movie.pdf")
         const movies = await getMovies()
         const source = getPdfReadableStream(movies[0])
         const destination = res
 
-        
-
         pipeline(source, destination, (err)=>{
-            if(!err) {
-                res.status(200).send('sent pdf')
-            } else {
-                console.log(err)
-            }
+            if(err) console.log(err)
         })
     } catch (error) {
         next(error)

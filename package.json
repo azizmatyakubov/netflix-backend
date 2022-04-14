@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/azizmatyakubov/netflix-backend#readme",
   "dependencies": {
+    "@sendgrid/mail": "^7.6.2",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
@@ -32,6 +33,7 @@
     "nodemon": "^2.0.15",
     "pdfmake": "^0.2.5",
     "stream": "^0.0.2",
-    "uniqid": "^5.4.0"
+    "uniqid": "^5.4.0",
+    "zlib": "^1.0.5"
   }
 }
